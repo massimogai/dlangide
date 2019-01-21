@@ -24,23 +24,27 @@ import std.utf : toUTF32;
 import std.file;
 import std.path;
 
-class FileCreationResult {
+class FileCreationResult
+{
     Project project;
     string filename;
-    this(Project project, string filename) {
+    this(Project project, string filename)
+    {
         this.project = project;
         this.filename = filename;
     }
 }
 
-class NewFileDlg : Dialog {
+class NewFileDlg : Dialog
+{
     IDEFrame _ide;
     Project _project;
     ProjectFolder _folder;
     string[] _sourcePaths;
-    this(IDEFrame parent, Project currentProject, ProjectFolder folder) {
-        super(UIString.fromId("OPTION_NEW_SOURCE_FILE"c), parent.window, 
-            DialogFlag.Modal | DialogFlag.Resizable | DialogFlag.Popup, 500, 400);
+    this(IDEFrame parent, Project currentProject, ProjectFolder folder)
+    {
+        super(UIString.fromId("OPTION_NEW_SOURCE_FILE"c), parent.window,
+                DialogFlag.Modal | DialogFlag.Resizable | DialogFlag.Popup, 500, 400);
         _ide = parent;
         _icon = "dlangui-logo1";
         this._project = currentProject;
@@ -53,11 +57,13 @@ class NewFileDlg : Dialog {
             _location = folder.filename;
     }
     /// override to implement creation of dialog controls
-    override void initialize() {
+    override void initialize()
+    {
         super.initialize();
         initTemplates();
         Widget content;
-        try {
+        try
+        {
             content = parseML(q{
                     VerticalLayout {
                     id: vlayout
@@ -100,12 +106,13 @@ class NewFileDlg : Dialog {
                         TextWidget { id: statusText; text: ""; layoutWidth: fill; textColor: 0xFF0000 }
                     }
                 });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             Log.e("Exceptin while parsing DML", e);
             throw e;
         }
 
-        
         _projectTemplateList = content.childById!StringListWidget("projectTemplateList");
         _templateDescription = content.childById!EditBox("templateDescription");
         _edFileName = content.childById!EditLine("edName");
@@ -119,7 +126,8 @@ class NewFileDlg : Dialog {
         _edLocation.filetypeIcons["dub.json"] = "project-d";
         _edLocation.filetypeIcons["package.json"] = "project-d";
         _edLocation.filetypeIcons[".dlangidews"] = "project-development";
-        _edLocation.addFilter(FileFilterEntry(UIString.fromId("IDE_FILES"c), "*.dlangidews;*.d;*.dd;*.di;*.ddoc;*.dh;*.json;*.xml;*.ini;*.dt"));
+        _edLocation.addFilter(FileFilterEntry(UIString.fromId("IDE_FILES"c),
+                "*.dlangidews;*.d;*.dd;*.di;*.ddoc;*.dh;*.json;*.xml;*.ini;*.dt"));
         _edLocation.caption = "Select directory"d;
 
         _edFileName.enterKey.connect(&onEnterKey);
@@ -134,7 +142,7 @@ class NewFileDlg : Dialog {
 
         // fill templates
         dstring[] names;
-        foreach(t; _templates)
+        foreach (t; _templates)
             names ~= t.name;
         _projectTemplateList.items = names;
         _projectTemplateList.selectedItemIndex = 0;
@@ -142,21 +150,21 @@ class NewFileDlg : Dialog {
         templateSelected(0);
 
         // listeners
-        _edLocation.contentChange = delegate (EditableContent source) {
+        _edLocation.contentChange = delegate(EditableContent source) {
             _location = toUTF8(source.text);
             validate();
         };
 
-        _edFileName.contentChange = delegate (EditableContent source) {
+        _edFileName.contentChange = delegate(EditableContent source) {
             _fileName = toUTF8(source.text);
             validate();
         };
 
-        _projectTemplateList.itemSelected = delegate (Widget source, int itemIndex) {
+        _projectTemplateList.itemSelected = delegate(Widget source, int itemIndex) {
             templateSelected(itemIndex);
             return true;
         };
-        _projectTemplateList.itemClick = delegate (Widget source, int itemIndex) {
+        _projectTemplateList.itemClick = delegate(Widget source, int itemIndex) {
             templateSelected(itemIndex);
             return true;
         };
@@ -167,13 +175,15 @@ class NewFileDlg : Dialog {
     }
 
     /// called after window with dialog is shown
-    override void onShow() {
+    override void onShow()
+    {
         super.onShow();
         _edFileName.selectAll();
         _edFileName.setFocus();
     }
 
-    protected bool onEnterKey(EditWidgetBase editor) {
+    protected bool onEnterKey(EditWidgetBase editor)
+    {
         if (!validate())
             return false;
         close(_buttonActions[0]);
@@ -198,15 +208,18 @@ class NewFileDlg : Dialog {
     ProjectTemplate _currentTemplate;
     ProjectTemplate[] _templates;
 
-    bool setError(dstring msg) {
+    bool setError(dstring msg)
+    {
         _statusText.text = msg;
         return msg.empty;
     }
 
-    bool validate() {
+    bool validate()
+    {
         string filename = _fileName;
         string fullFileName = filename;
-        if (!_currentTemplate.fileExtension.empty && filename.endsWith(_currentTemplate.fileExtension))
+        if (!_currentTemplate.fileExtension.empty
+                && filename.endsWith(_currentTemplate.fileExtension))
             filename = filename[0 .. $ - _currentTemplate.fileExtension.length];
         else
             fullFileName = fullFileName ~ _currentTemplate.fileExtension;
@@ -217,25 +230,31 @@ class NewFileDlg : Dialog {
         if (!exists(_location) || !isDir(_location))
             return setError("Location directory does not exist");
 
-        if (_currentTemplate.kind == FileKind.MODULE || _currentTemplate.kind == FileKind.PACKAGE) {
+        if (_currentTemplate.kind == FileKind.MODULE || _currentTemplate.kind == FileKind.PACKAGE)
+        {
             string sourcePath, relativePath;
             if (!findSource(_sourcePaths, _location, sourcePath, relativePath))
                 return setError("Location is outside of source path");
             if (!isValidModuleName(filename))
                 return setError("Invalid file name");
-            _moduleName = filename; 
+            _moduleName = filename;
             _packageName = getPackageName(sourcePath, relativePath);
             string m;
-            if (_currentTemplate.kind == FileKind.MODULE) {
+            if (_currentTemplate.kind == FileKind.MODULE)
+            {
                 m = !_packageName.empty ? _packageName ~ '.' ~ _moduleName : _moduleName;
-            } else {
+            }
+            else
+            {
                 m = _packageName;
             }
             _edModuleName.text = toUTF32(m);
             _packageName = m;
             if (_currentTemplate.kind == FileKind.PACKAGE && _packageName.length == 0)
                 return setError("Package should be located in subdirectory");
-        } else {
+        }
+        else
+        {
             string projectPath = _project.dir;
             if (!isSubdirOf(_location, projectPath))
                 return setError("Location is outside of project path");
@@ -247,24 +266,33 @@ class NewFileDlg : Dialog {
     }
 
     private FileCreationResult _result;
-    bool createItem() {
-        if(!createFile(_fullPathName, _currentTemplate.kind, _packageName, _currentTemplate.srccode)) {
+    bool createItem()
+    {
+        if (!createFile(_fullPathName, _currentTemplate.kind, _packageName,
+                _currentTemplate.srccode))
+        {
             return setError("Cannot create file");
         }
-        
+
         _result = new FileCreationResult(_project, _fullPathName);
         return true;
     }
 
-    override void close(const Action action) {
+    override void close(const Action action)
+    {
         Action newaction = action.clone();
-        if (action.id == IDEActions.FileNew) {
-            if (!validate()) {
-                window.showMessageBox(UIString.fromId("ERROR"c), UIString.fromId("ERROR_INVALID_PARAMETERS"c));
+        if (action.id == IDEActions.FileNew)
+        {
+            if (!validate())
+            {
+                window.showMessageBox(UIString.fromId("ERROR"c),
+                        UIString.fromId("ERROR_INVALID_PARAMETERS"c));
                 return;
             }
-            if (!createItem()) {
-                window.showMessageBox(UIString.fromId("ERROR"c), UIString.fromId("ERROR_INVALID_PARAMETERS"c));
+            if (!createItem())
+            {
+                window.showMessageBox(UIString.fromId("ERROR"c),
+                        UIString.fromId("ERROR_INVALID_PARAMETERS"c));
                 return;
             }
             newaction.objectParam = _result;
@@ -272,16 +300,20 @@ class NewFileDlg : Dialog {
         super.close(newaction);
     }
 
-    protected void templateSelected(int index) {
+    protected void templateSelected(int index)
+    {
         if (_currentTemplateIndex == index)
             return;
         _currentTemplateIndex = index;
         _currentTemplate = _templates[index];
         _templateDescription.text = _currentTemplate.description;
-        if (_currentTemplate.kind == FileKind.PACKAGE) {
+        if (_currentTemplate.kind == FileKind.PACKAGE)
+        {
             _edFileName.enabled = false;
             _edFileName.text = "package"d;
-        } else {
+        }
+        else
+        {
             if (_edFileName.text == "package")
                 _edFileName.text = "newfile";
             _edFileName.enabled = true;
@@ -290,17 +322,23 @@ class NewFileDlg : Dialog {
         validate();
     }
 
-    void initTemplates() {
-        _templates ~= new ProjectTemplate("Empty module"d, "Empty D module file."d, ".d",
-            "\n", FileKind.MODULE);
-        _templates ~= new ProjectTemplate("Package"d, "D package."d, ".d",
-            "\n", FileKind.PACKAGE);
-        _templates ~= new ProjectTemplate("Text file"d, "Empty text file."d, ".txt",
-            "\n", FileKind.TEXT);
-        _templates ~= new ProjectTemplate("JSON file"d, "Empty json file."d, ".json",
-            "{\n}\n", FileKind.TEXT);
-        _templates ~= new ProjectTemplate("Vibe-D Diet Template file"d, "Empty Vibe-D Diet Template."d, ".dt",
-            q{
+    void initTemplates()
+    {
+        _templates ~= new ProjectTemplate("Empty module"d,
+                "Empty D module file."d, ".d", "\n", FileKind.MODULE);
+        _templates ~= new ProjectTemplate("Empty Class"d,
+                "Empty D class file."d, ".d", "\n", FileKind.MODULE_CLASS);
+        _templates ~= new ProjectTemplate("Empty Interface"d,
+                "Empty D interface file."d, ".d", "\n", FileKind.MODULE_INTERFACE);
+        _templates ~= new ProjectTemplate("Main module"d,
+                "D Main module file."d, ".d", "\n", FileKind.MODULE_MAIN);
+        _templates ~= new ProjectTemplate("Package"d, "D package."d, ".d", "\n", FileKind.PACKAGE);
+        _templates ~= new ProjectTemplate("Text file"d, "Empty text file."d,
+                ".txt", "\n", FileKind.TEXT);
+        _templates ~= new ProjectTemplate("JSON file"d, "Empty json file."d,
+                ".json", "{\n}\n", FileKind.TEXT);
+        _templates ~= new ProjectTemplate("Vibe-D Diet Template file"d,
+                "Empty Vibe-D Diet Template."d, ".dt", q{
                 doctype html
                     html
                         head
@@ -311,19 +349,25 @@ class NewFileDlg : Dialog {
     }
 }
 
-enum FileKind {
+enum FileKind
+{
     MODULE,
+    MODULE_CLASS,
+    MODULE_INTERFACE,
+    MODULE_MAIN,
     PACKAGE,
     TEXT,
 }
 
-class ProjectTemplate {
+class ProjectTemplate
+{
     dstring name;
     dstring description;
     string fileExtension;
     string srccode;
     FileKind kind;
-    this(dstring name, dstring description, string fileExtension, string srccode, FileKind kind) {
+    this(dstring name, dstring description, string fileExtension, string srccode, FileKind kind)
+    {
         this.name = name;
         this.description = description;
         this.fileExtension = fileExtension;
@@ -332,51 +376,68 @@ class ProjectTemplate {
     }
 }
 
-bool createFile(string fullPathName, FileKind fileKind, string packageName, string sourceCode) {
-    try {
-        if (fileKind == FileKind.MODULE) {
+bool createFile(string fullPathName, FileKind fileKind, string packageName, string sourceCode)
+{
+    try
+    {
+        if (fileKind == FileKind.MODULE)
+        {
             string txt = "module " ~ packageName ~ ";\n\n" ~ sourceCode;
             write(fullPathName, txt);
-        } else if (fileKind == FileKind.PACKAGE) {
+        }
+        else if (fileKind == FileKind.PACKAGE)
+        {
             string txt = "module " ~ packageName ~ ";\n\n" ~ sourceCode;
             write(fullPathName, txt);
-        } else {
+        }
+        else
+        {
             write(fullPathName, sourceCode);
         }
         return true;
     }
-    catch(Exception e) 	{
+    catch (Exception e)
+    {
         Log.e("Cannot create file", e);
         return false;
     }
 }
 
-string getPackageName(string path, string[] sourcePaths){
+string getPackageName(string path, string[] sourcePaths)
+{
     string sourcePath, relativePath;
-    if(!findSource(sourcePaths, path, sourcePath, relativePath)) return "";
+    if (!findSource(sourcePaths, path, sourcePath, relativePath))
+        return "";
     return getPackageName(sourcePath, relativePath);
 }
 
-string getPackageName(string sourcePath, string relativePath){
+string getPackageName(string sourcePath, string relativePath)
+{
 
     char[] buf;
-    foreach(c; relativePath) {
+    foreach (c; relativePath)
+    {
         char ch = c;
         if (ch == '/' || ch == '\\')
             ch = '.';
         else if (ch == '.')
             ch = '_';
-        if (ch == '.' && (buf.length == 0 || buf[$-1] == '.'))
+        if (ch == '.' && (buf.length == 0 || buf[$ - 1] == '.'))
             continue; // skip duplicate .
         buf ~= ch;
     }
-    if (buf.length && buf[$-1] == '.')
+    if (buf.length && buf[$ - 1] == '.')
         buf.length--;
     return buf.dup;
 }
-private bool findSource(string[] sourcePaths, string path, ref string sourceFolderPath, ref string relativePath) {
-    foreach(dir; sourcePaths) {
-        if (isSubdirOf(path, dir)) {
+
+private bool findSource(string[] sourcePaths, string path,
+        ref string sourceFolderPath, ref string relativePath)
+{
+    foreach (dir; sourcePaths)
+    {
+        if (isSubdirOf(path, dir))
+        {
             sourceFolderPath = dir;
             relativePath = path[sourceFolderPath.length .. $];
             if (relativePath.length > 0 && (relativePath[0] == '\\' || relativePath[0] == '/'))
@@ -386,10 +447,13 @@ private bool findSource(string[] sourcePaths, string path, ref string sourceFold
     }
     return false;
 }
-private bool isSubdirOf(string path, string basePath) {
+
+private bool isSubdirOf(string path, string basePath)
+{
     if (path.equal(basePath))
         return true;
-    if (path.length > basePath.length + 1 && path.startsWith(basePath)) {
+    if (path.length > basePath.length + 1 && path.startsWith(basePath))
+    {
         char ch = path[basePath.length];
         return ch == '/' || ch == '\\';
     }
