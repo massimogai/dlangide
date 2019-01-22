@@ -85,6 +85,7 @@ enum IDEActions : int {
     ViewToggleStatusbar,
 
     ToolsOpenDMDTraceLog,
+    CreateClass,
 }
 
 __gshared static this() {
@@ -185,6 +186,8 @@ const Action ACTION_GO_TO_NEXT_POSITION = (new Action(IDEActions.GotoNextPositio
 const Action ACTION_FIND_TEXT = (new Action(IDEActions.FindInFiles,  "FIND_IN_FILES"c, "edit-find"c, KeyCode.KEY_F, KeyFlag.Control | KeyFlag.Shift)).disableByDefault();
 const Action ACTION_TOOLS_OPEN_DMD_TRACE_LOG = (new Action(IDEActions.ToolsOpenDMDTraceLog,  "OPEN_DMD_TRACE_LOG"c));
 
+const Action ACTION_SOURCE_CREATECLASS = (new Action(IDEActions.CreateClass,  "SOURCE_CREATECLASS"c));
+
 
 const Action[] STD_IDE_ACTIONS = [
     ACTION_EDIT_COPY, ACTION_EDIT_PASTE, ACTION_EDIT_CUT,
@@ -211,4 +214,5 @@ const Action[] STD_IDE_ACTIONS = [
     ACTION_GO_TO_PREV_POSITION,
     ACTION_GO_TO_NEXT_POSITION,
     ACTION_FIND_TEXT,
+    ACTION_SOURCE_CREATECLASS,
 ];

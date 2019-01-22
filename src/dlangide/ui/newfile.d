@@ -326,12 +326,14 @@ class NewFileDlg : Dialog
     {
         _templates ~= new ProjectTemplate("Empty module"d,
                 "Empty D module file."d, ".d", "\n", FileKind.MODULE);
+                /*
         _templates ~= new ProjectTemplate("Empty Class"d,
                 "Empty D class file."d, ".d", "\n", FileKind.MODULE_CLASS);
         _templates ~= new ProjectTemplate("Empty Interface"d,
                 "Empty D interface file."d, ".d", "\n", FileKind.MODULE_INTERFACE);
         _templates ~= new ProjectTemplate("Main module"d,
                 "D Main module file."d, ".d", "\n", FileKind.MODULE_MAIN);
+                */
         _templates ~= new ProjectTemplate("Package"d, "D package."d, ".d", "\n", FileKind.PACKAGE);
         _templates ~= new ProjectTemplate("Text file"d, "Empty text file."d,
                 ".txt", "\n", FileKind.TEXT);
@@ -352,9 +354,11 @@ class NewFileDlg : Dialog
 enum FileKind
 {
     MODULE,
+    /*
     MODULE_CLASS,
     MODULE_INTERFACE,
     MODULE_MAIN,
+    */
     PACKAGE,
     TEXT,
 }

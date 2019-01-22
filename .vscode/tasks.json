@@ -11,6 +11,15 @@
             "buildType": "debug",
             "configuration": "default",
             "problemMatcher": []
+        },
+        {
+            "type": "dub",
+            "run": false,
+            "compiler": "dmd",
+            "archType": "x86_64",
+            "buildType": "debug",
+            "configuration": "default",
+            "problemMatcher": []
         }
     ]
 }
