@@ -1,0 +1,34 @@
+{
+    "startupProject": "dlangide",
+    "expandedItems": [
+        "/home/massimo/progetti-personali/ide/dlangide/src",
+        "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/ui",
+        "/home/massimo/progetti-personali/ide/dlangide/src/ddebug",
+        "/home/massimo/.dub/packages/dcd-0.9.13/dcd/src/dcd/common",
+        "/home/massimo/progetti-personali/ide/dlangide/src/ddc/lexer",
+        "/home/massimo/.dub/packages/libdparse-0.9.10/libdparse/src",
+        "/home/massimo/.dub/packages/dcd-0.9.13/dcd/src/dcd/server/autocomplete",
+        "/home/massimo/progetti-personali/ide/dlangide/dub.json",
+        "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/tools/d",
+        "/home/massimo/.dub/packages/dcd-0.9.13/dcd/src/dcd/client",
+        "/home/massimo/progetti-personali/ide/dlangide/src/ddc"
+    ],
+    "selectedWorkspaceItem": "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/tools/editortool.d",
+    "files": [
+        {
+            "file": "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/ui/frame.d",
+            "column": 1710,
+            "row": 28
+        },
+        {
+            "file": "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/ui/commands.d",
+            "column": 195,
+            "row": 37
+        },
+        {
+            "file": "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/tools/editortool.d",
+            "column": 0,
+            "row": 0
+        }
+    ]
+}

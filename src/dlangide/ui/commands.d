@@ -86,6 +86,10 @@ enum IDEActions : int {
 
     ToolsOpenDMDTraceLog,
     CreateClass,
+    CreateInterface,
+    CreateEnum,
+    CreateMain,
+    FormatCode,
 }
 
 __gshared static this() {
@@ -187,6 +191,10 @@ const Action ACTION_FIND_TEXT = (new Action(IDEActions.FindInFiles,  "FIND_IN_FI
 const Action ACTION_TOOLS_OPEN_DMD_TRACE_LOG = (new Action(IDEActions.ToolsOpenDMDTraceLog,  "OPEN_DMD_TRACE_LOG"c));
 
 const Action ACTION_SOURCE_CREATECLASS = (new Action(IDEActions.CreateClass,  "SOURCE_CREATECLASS"c));
+const Action ACTION_SOURCE_CREATEINTERFACE = (new Action(IDEActions.CreateInterface,  "SOURCE_CREATEINTERFACE"c));
+const Action ACTION_SOURCE_CREATEENUM = (new Action(IDEActions.CreateEnum,  "SOURCE_CREATEENUM"c));
+const Action ACTION_SOURCE_CREATEMAIN = (new Action(IDEActions.CreateMain,  "SOURCE_CREATEMAIN"c));
+const Action ACTION_SOURCE_FORMATCODE = (new Action(IDEActions.FormatCode,  "SOURCE_FORMATCODE"c));
 
 
 const Action[] STD_IDE_ACTIONS = [
@@ -215,4 +223,8 @@ const Action[] STD_IDE_ACTIONS = [
     ACTION_GO_TO_NEXT_POSITION,
     ACTION_FIND_TEXT,
     ACTION_SOURCE_CREATECLASS,
+     ACTION_SOURCE_CREATEINTERFACE,
+       ACTION_SOURCE_CREATEENUM,
+      ACTION_SOURCE_CREATEMAIN,
+      ACTION_SOURCE_FORMATCODE,
 ];

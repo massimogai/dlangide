@@ -929,6 +929,10 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
 
         MenuItem sourceItem = new MenuItem(new Action(2, "MENU_SOURCE"));
         sourceItem.add(ACTION_SOURCE_CREATECLASS);
+        sourceItem.add(ACTION_SOURCE_CREATEINTERFACE);
+        sourceItem.add(ACTION_SOURCE_CREATEENUM);
+        sourceItem.add(ACTION_SOURCE_CREATEMAIN);
+        sourceItem.add(ACTION_SOURCE_FORMATCODE);
 
         MenuItem editItem = new MenuItem(new Action(2, "MENU_EDIT"));
         editItem.add(ACTION_EDIT_COPY, ACTION_EDIT_PASTE, ACTION_EDIT_CUT,
@@ -1227,6 +1231,10 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
             a.state = currentWorkspace !is null ? ACTION_STATE_ENABLED : ACTION_STATE_DISABLE;
             return true;
         case IDEActions.CreateClass:
+        case IDEActions.CreateInterface:
+        case IDEActions.CreateEnum:
+        case IDEActions.CreateMain:
+        case IDEActions.FormatCode:
             if (currentEditor)
                 a.state = ACTION_STATE_ENABLED;
             else
@@ -1689,6 +1697,42 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
                             dstring[] buffer=[first_line,"}"];
                             currentEditor.content.appendLines(buffer);
                         });
+
+                return true;
+                 case IDEActions.CreateInterface:
+                window.showInputBox("New Interface",
+                        "Interface Name", "NewInterfaceName"d, delegate(dstring  name) {
+
+                            dstring first_line = "interface " ~  name ~ " {";
+                            dstring[] buffer=[first_line,"}"];
+                            currentEditor.content.appendLines(buffer);
+                        });
+
+                return true;
+                 case IDEActions.CreateEnum:
+                window.showInputBox("New Class",
+                        "Enum Name", "NewEnumName"d, delegate(dstring  name) {
+
+                            dstring first_line = "enum " ~  name ~ " {";
+                            dstring[] buffer=[first_line,"}"];
+                            currentEditor.content.appendLines(buffer);
+                        });
+
+                return true;
+                case IDEActions.CreateMain:
+               
+
+                            dstring first_line = "main  {";
+                            dstring[] buffer=[first_line,"}"];
+                            currentEditor.content.appendLines(buffer);
+                        
+
+                return true;
+                 case IDEActions.FormatCode:
+               
+
+                            
+                        
 
                 return true;
             default:
