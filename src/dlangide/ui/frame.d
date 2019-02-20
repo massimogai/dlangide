@@ -38,6 +38,7 @@ import ddebug.common.nodebug;
 import ddebug.common.debugger;
 import ddebug.gdb.gdbinterface;
 import dlangide.tools.d.dmdtrace;
+import dlangide.ui.outlinepanel;
 
 import std.conv;
 import std.utf;
@@ -45,6 +46,10 @@ import std.algorithm : equal, endsWith;
 import std.array : empty;
 import std.string : split;
 import std.path;
+import std.stdio;
+import dfmt.formatter;
+import dfmt.config;
+import std.outbuffer;
 
 // TODO: get version from GIT commit
 //version is now stored in file views/VERSION
@@ -99,6 +104,7 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
 
     MenuItem mainMenuItems;
     WorkspacePanel _wsPanel;
+    OutlinePanel _olPanel;
     OutputPanel _logPanel;
     DockHost _dockHost;
     TabWidget _tabs;
@@ -474,7 +480,12 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
     {
         Log.d("onSourceFileSelected ", file.filename, " activate=", activate);
         if (activate)
-            return openSourceFile(file.filename, file, activate);
+        {
+           
+            bool result=openSourceFile(file.filename, file, activate);
+            if (result){ _olPanel.update(file);}
+            return result;
+        }
         return false;
     }
 
@@ -603,6 +614,11 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
         _wsPanel.activate();
     }
 
+    void showOutline()
+    {
+        _olPanel.activate();
+    }
+
     static immutable HOME_SCREEN_ID = "HOME_SCREEN";
     void showHomeScreen()
     {
@@ -633,6 +649,14 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
         _tabs.removeTab(HOME_SCREEN_ID);
     }
 
+    void onOutlineItemSelected(ulong line)
+    {
+        DSourceEdit editor = currentEditor();
+
+        editor.setCaretPos(cast(int) line, 1, true);
+
+    }
+
     void onTabChanged(string newActiveTabId, string previousTabId)
     {
         int index = _tabs.tabIndex(newActiveTabId);
@@ -645,6 +669,7 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
                 //setCurrentProject(file.project);
                 // tab is source file editor
                 _wsPanel.selectItem(file);
+                _olPanel.update(file);
                 focusEditor(file.filename);
             }
             //window.windowCaption(tab.text.value ~ " - "d ~ frameWindowCaptionSuffix);
@@ -834,6 +859,9 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
             }
         }
         requestActionsUpdate();
+        if (_tabs.tabCount()==0){
+_olPanel.reset();
+            }
     }
 
     /// create app body widget
@@ -863,6 +891,11 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
         _wsPanel.dockAlignment = DockAlignment.Left;
         _dockHost.addDockedWindow(_wsPanel);
         _wsPanel.visibility = Visibility.Gone;
+
+        _olPanel = new OutlinePanel("workspace");
+        _olPanel.outlineItemSelectionListener = &onOutlineItemSelected;
+        _dockHost.addDockedWindow(_olPanel);
+        _olPanel.visibility = Visibility.Gone;
 
         _logPanel = new OutputPanel("output");
         _logPanel.compilerLogIssueClickHandler = &onCompilerLogIssueClick;
@@ -1694,46 +1727,48 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
                         "Class Name", "NewClassName"d, delegate(dstring classname) {
 
                             dstring first_line = "class " ~ classname ~ " {";
-                            dstring[] buffer=[first_line,"}"];
+                            dstring[] buffer = [first_line, "}"];
                             currentEditor.content.appendLines(buffer);
                         });
 
                 return true;
-                 case IDEActions.CreateInterface:
+            case IDEActions.CreateInterface:
                 window.showInputBox("New Interface",
-                        "Interface Name", "NewInterfaceName"d, delegate(dstring  name) {
+                        "Interface Name", "NewInterfaceName"d, delegate(dstring name) {
 
-                            dstring first_line = "interface " ~  name ~ " {";
-                            dstring[] buffer=[first_line,"}"];
+                            dstring first_line = "interface " ~ name ~ " {";
+                            dstring[] buffer = [first_line, "}"];
                             currentEditor.content.appendLines(buffer);
                         });
 
                 return true;
-                 case IDEActions.CreateEnum:
+            case IDEActions.CreateEnum:
                 window.showInputBox("New Class",
-                        "Enum Name", "NewEnumName"d, delegate(dstring  name) {
+                        "Enum Name", "NewEnumName"d, delegate(dstring name) {
 
-                            dstring first_line = "enum " ~  name ~ " {";
-                            dstring[] buffer=[first_line,"}"];
+                            dstring first_line = "enum " ~ name ~ " {";
+                            dstring[] buffer = [first_line, "}"];
                             currentEditor.content.appendLines(buffer);
                         });
 
                 return true;
-                case IDEActions.CreateMain:
-               
-
-                            dstring first_line = "main  {";
-                            dstring[] buffer=[first_line,"}"];
-                            currentEditor.content.appendLines(buffer);
-                        
+            case IDEActions.CreateMain:
+                dstring first_line = "main  {";
+                dstring[] buffer = [first_line, "}"];
+                currentEditor.content.appendLines(buffer);
 
                 return true;
-                 case IDEActions.FormatCode:
-               
-
-                            
-                        
-
+            case IDEActions.FormatCode:
+                string source_desc = "stdin";
+                dstring text = currentEditor.content.text;
+                string mystring = to!string(text);
+                ubyte[] buffer = cast(ubyte[]) mystring;
+                OutBuffer output = new OutBuffer();
+                Config formatterConfig;
+                formatterConfig.initializeWithDefaults();
+                format(source_desc, buffer, output, &formatterConfig);
+                dstring formattedText = to!dstring(output.toString());
+                currentEditor.content.text = formattedText;
                 return true;
             default:
                 return super.handleAction(a);
@@ -2305,6 +2340,9 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
             openSourceFile(ws.startupProject.mainSourceFile.filename);
             _tabs.setFocus();
         }
+
+        _olPanel.activate();
+
         if (ws)
         {
             _wsPanel.activate();
@@ -2584,3 +2622,4 @@ class IDEFrame : AppFrame, ProgramExecutionStatusListener,
 
     CaretHistory caretHistory;
 }
+

@@ -4,6 +4,7 @@
     "name": "dlangide",
     "description": "Cross platform D language IDE based on dlangui library",
     "projects": {
-        "dlangide": "dub.json"
+        "dlangide": "dub.json",
+        "dastworx": "modules/dastworx/dub.json"
     }
 }

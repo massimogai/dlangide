@@ -14,7 +14,9 @@
     "dependencies": {
         "dlangui": "==0.9.182",
         "dsymbol": "~>0.4.8",
-        "dcd": "~>0.9.13"
+        "dcd": "~>0.9.13",
+        "dfmt": "==0.8.3",
+       "dastworx": "*",
     },
 
     "copyFiles-windows": [

@@ -1,0 +1,21 @@
+{
+  "name": "dastworx",
+  "description": "The D Completion Daemon is an auto-complete program for the D programming language",
+  "copyright": "Copyright © 2015-2017, Brian Schott",
+  "targetType" : "library",
+  "targetPath" : "lib",
+  "targetName" : "dastworx",
+    
+  "authors": [
+    " "
+  ],
+   
+  "license": "GPL-3.0",
+  "dependencies":  {
+    "dsymbol": "~>0.4.8",
+    "libdparse": "~>0.9.8",
+    "msgpack-d": "~>1.0.0-beta.3",
+    "iz": "*"
+  } 
+ 
+}

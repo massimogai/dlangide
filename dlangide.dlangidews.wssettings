@@ -1,7 +1,8 @@
 {
     "startupProject": "dlangide",
     "expandedItems": [
-        "/home/massimo/progetti-personali/ide/dlangide/src",
+        "/home/massimo/.dub/packages/dfmt-0.8.3/dfmt/src",
+        "/home/massimo/.dub/packages/dfmt-0.8.3/dfmt/src/dfmt",
         "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/ui",
         "/home/massimo/progetti-personali/ide/dlangide/src/ddebug",
         "/home/massimo/.dub/packages/dcd-0.9.13/dcd/src/dcd/common",
@@ -9,26 +10,48 @@
         "/home/massimo/.dub/packages/libdparse-0.9.10/libdparse/src",
         "/home/massimo/.dub/packages/dcd-0.9.13/dcd/src/dcd/server/autocomplete",
         "/home/massimo/progetti-personali/ide/dlangide/dub.json",
+        "/home/massimo/progetti-personali/ide/dlangide/modules/dastworx/src",
         "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/tools/d",
+        "/home/massimo/.dub/packages/libdparse-0.7.1/libdparse/src/dparse",
         "/home/massimo/.dub/packages/dcd-0.9.13/dcd/src/dcd/client",
-        "/home/massimo/progetti-personali/ide/dlangide/src/ddc"
+        "/home/massimo/progetti-personali/ide/dlangide/src/ddc",
+        "/home/massimo/.dub/packages/dlangui-0.9.182/dlangui/src/dlangui/widgets"
     ],
-    "selectedWorkspaceItem": "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/tools/editortool.d",
+    "selectedWorkspaceItem": "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/ui/wspanel.d",
     "files": [
         {
+            "file": "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/ui/wspanel.d",
+            "column": 346,
+            "row": 31
+        },
+        {
             "file": "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/ui/frame.d",
-            "column": 1710,
+            "column": 826,
+            "row": 1
+        },
+        {
+            "file": "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/ui/outlinepanel.d",
+            "column": 80,
+            "row": 7
+        },
+        {
+            "file": "/home/massimo/progetti-personali/ide/dlangide/modules/dastworx/src/dastworx.d",
+            "column": 92,
             "row": 28
         },
         {
-            "file": "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/ui/commands.d",
-            "column": 195,
-            "row": 37
+            "file": "/home/massimo/.dub/packages/dlangui-0.9.182/dlangui/src/dlangui/widgets/editors.d",
+            "column": 2253,
+            "row": 20
         },
         {
-            "file": "/home/massimo/progetti-personali/ide/dlangide/src/dlangide/tools/editortool.d",
-            "column": 0,
-            "row": 0
+            "file": "/home/massimo/.dub/packages/dlangui-0.9.182/dlangui/src/dlangui/widgets/tree.d",
+            "column": 210,
+            "row": 34
         }
+    ],
+    "breakpoints": [
+    ],
+    "bookmarks": [
     ]
 }
